@@ -1,0 +1,11 @@
+Product UnitPrice Quantity
+Apples 1.20 50
+Oranges 1.50 30
+Pineapples 2.25 20
+Mangoes 3.10 15
+Bananas 0.75 60
+Grapes 2.00 25
+Strawberries 2.50 18
+Blueberries 3.30 10
+Watermelon 5.00 8
+Lemons 0.60 70
