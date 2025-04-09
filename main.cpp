@@ -115,17 +115,9 @@ void manual_entry_mode(){
     double sum = 0;
     int size_of_item_collection = items.size();
     if(size_of_item_collection > 0){
-        std::cout << std::string(90, '-') << '\n';
-        std::cout << std::fixed << std::setprecision(2)<< '\n';
-        std::cout << std::left << std::setw(11) << "Product" << std::right << std::setw(11)
-            << "Unit Price" << std::setw(14) << "Quantity" << std::setw(15) << "Gross Total" << std::setw(20)
-             << "Discount Rate" << std::setw(15) <<  "Discount" << std::setw(11) << "Net Total" << '\n';
-        
-        std::cout << std::string(90, '-') << '\n';
+        write_table_header();
         for(int i = 0; i < size_of_item_collection; i++){
-            std::cout << std::left << std::setw(11) << items[i].getProductName() << std::right << std::setw(11)
-            << items[i].getUnitPrice() << std::setw(14) << items[i].getQuantity() << std::setw(15) << items[i].getGrossPrice() << std::setw(11)
-             << items[i].getDiscountRate() << std::setw(15) <<items[i].getDiscount() << std::setw(11) << items[i].getNetPrice() << '\n';
+            write_item_to_table(items[i]);
             sum += items[i].getNetPrice();
         }
         std::cout << "Total: " << sum << '\n';
@@ -144,7 +136,7 @@ void load_from_file(){
     std::ifstream input("stock.txt");
     if(input.good()){
         std::string line;
-        getline(input, line); //skipping the firt line since its the heading
+        getline(input, line); //skipping the first line since its the heading
         write_table_header();
         while(getline(input, line)){
             std::vector<std::string> part_parameters = split_string(line, ' ');
@@ -179,6 +171,7 @@ int main(){
                             "⠿⠛⠉⠁⠁⠄⠄⠄⣻⣿⣿⣧⣠⣀⠄⠄⠄⠄⡀⠂⠄⠄⠄⠄⠄⠄⠈⠉⠿⢿\n"
                             "⠄⠄⠄⠄⠄⠄⠄⠄⠄⠘⠿⣿⡿⠃⢀⡠⠄⠃⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄\n";
    // std::cout << zhong << '\n';
+   //can't print out zhong because cmd doesnt support the ascii chars used. if youre on linux just uncomment the 2 print zhong lines and youre golden
     std::cout << "How do you wish to enter the items:\n1. Manually\n2. Load from file\n3. Quit Application\n";
     std::cout << "Enter your choice: ";
     int choice = 0;
