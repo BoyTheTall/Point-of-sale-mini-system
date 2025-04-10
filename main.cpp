@@ -3,7 +3,16 @@
 #include <vector>
 #include <fstream>
 #include <bits/stdc++.h>
+#include <ctime>
 
+int table_width = 105;
+std::string get_current_date_time(){
+    std::string date_time;
+    time_t current_time;
+    time(&current_time);
+    date_time = ctime(&current_time);
+    return date_time;
+}
 class Item{
 private:
     std::string product_name;
@@ -63,22 +72,24 @@ std::vector<std::string> split_string(std::string str, char delimeter){
     return string_parts;
 }
 
-void write_table_header(){
-    std::cout << std::string(105, '-') << '\n';
-    std::cout << std::fixed << std::setprecision(2)<< '\n';
-    std::cout << std::left << std::setw(15) << "Product" << std::right << std::setw(15)
+void write_table_header(std::ostream& output_stream){
+    output_stream << std::string(table_width, '-') << '\n';
+    output_stream << std::fixed << std::setprecision(2)<< '\n';
+    output_stream << std::left << std::setw(15) << "Product" << std::right << std::setw(15)
             << "Unit Price" << std::setw(14) << "Quantity" << std::setw(15) << "Gross Total" << std::setw(20)
              << "Discount Rate(%)" << std::setw(15) <<  "Discount" << std::setw(11) << "Net Total" << '\n';
-    std::cout << std::string(105, '-') << '\n';
+    output_stream << std::string(table_width, '-') << '\n';
 }
-void write_item_to_table(Item item){
-    std::cout << std::left << std::setw(15) << item.getProductName() << std::right << std::setw(15)
+void write_item_to_table(Item item, std::ostream& output_stream){
+    output_stream << std::left << std::setw(15) << item.getProductName() << std::right << std::setw(15)
             << item.getUnitPrice() << std::setw(14) << item.getQuantity() << std::setw(15) << item.getGrossPrice() << std::setw(19)
              << (item.getDiscountRate() * 100) << std::setw(16) <<item.getDiscount() 
             << std::setw(10) << item.getNetPrice() << '\n';
 }
-
-void manual_entry_mode(){
+void end_table(std::ostream& output_stream){
+    output_stream << std::string(table_width, '-') << '\n';
+}
+void manual_entry_mode(std::ostream& output_file_stream){
     std::vector<Item> items;
     int number_of_products;
     std::cout << "How many products do you want to enter: ";
@@ -116,18 +127,23 @@ void manual_entry_mode(){
     double sum = 0;
     int size_of_item_collection = items.size();
     if(size_of_item_collection > 0){
-        write_table_header();
+        write_table_header(std::cout);
+        write_table_header(output_file_stream);
         for(int i = 0; i < size_of_item_collection; i++){
-            write_item_to_table(items[i]);
+            write_item_to_table(items[i], std::cout);
+            write_item_to_table(items[i], output_file_stream);
             sum += items[i].getNetPrice();
         }
+        end_table(std::cout);
+        end_table(output_file_stream);
+        output_file_stream << "Total: " << sum << '\n';
         std::cout << "Total: " << sum << '\n';
     }
     else{
         std::cout << "No Items were entered\n";
     }
 }
-void load_from_file(){
+void load_from_file(std::ostream& output_file_stream){
     std::string product_name;
     double unit_price;
     int quantity;
@@ -138,7 +154,8 @@ void load_from_file(){
     if(input.good()){
         std::string line;
         getline(input, line); //skipping the first line since its the heading
-        write_table_header();
+        write_table_header(std::cout);
+        write_table_header(output_file_stream);
         while(getline(input, line)){
             std::vector<std::string> part_parameters = split_string(line, ' ');
             product_name = part_parameters[0];
@@ -147,9 +164,14 @@ void load_from_file(){
 
             Item item(product_name, unit_price, quantity);
             sum += item.getNetPrice();
-            write_item_to_table(item);
+            write_item_to_table(item, std::cout);
+            write_item_to_table(item, output_file_stream);
         }
+        input.close();
+        end_table(std::cout);
+        end_table(output_file_stream);
         std::cout << "Total: " << sum << '\n';
+        output_file_stream << "Total: " << sum << '\n';
     }else{
         std::cout << "Error, file couldn't be opened successfully. probably because it doesn't exist";
     }
@@ -178,16 +200,19 @@ int main(){
     int choice = 0;
     std::cin >> choice;
     std::string option;
+    std::string output_file_name = "receipt" + get_current_date_time() + ".txt";
+    std::ofstream output_file_stream(output_file_name);
     while(choice != 0){
         switch (choice)
         {
         case 1:
-            manual_entry_mode();
+            manual_entry_mode(output_file_stream);
             std::cout << "Are you done viewing the data [y]yes [n] no (Application will exit this view anyway no matter what you choose): ";
             std::cin >> option;
             break;
         case 2:
-            load_from_file();
+            load_from_file(output_file_stream);
+
             std::cout << "Are you done viewing the data [y]yes [n] no (Application will exit this view anyway no matter what you choose): ";
             std::cin >> option;
             break;
@@ -198,11 +223,15 @@ int main(){
             std::cout << "Invalid option Entered";
             break;
         }
+    
+    
+    output_file_stream.close();
     system("cls");    
    // std::cout << zhong << '\n';
     std::cout << "How do you wish to enter the items:\n1. Manually\n2. Load from file\n3. Quit Application\n";
     std::cout << "Enter your choice: ";
     std::cin >> choice;
+    
     }
    
     return 0;
