@@ -177,6 +177,23 @@ void load_from_file(std::ostream& output_file_stream){
     }
 
 }
+std::string generate_receipt_directory(std::string current_date_time){
+    //output filename is receipt_dayname_monthname_day_hh_mm_ss_yyyy
+    std::vector<std::string> date_part_components = split_string(current_date_time, ' ');
+    std::vector<std::string> time_components = split_string(date_part_components[3], ':');
+    std::string output_file_name = "Receipts\\receipt_" + date_part_components[0] + '_' + date_part_components[1] + '_'+ date_part_components[2] + '_'+ time_components[0] + '_' + time_components[1] + '_' + time_components[2]  + '_' + split_string(date_part_components[4], '\n')[0] + ".txt";
+    std::cout << "Current Receipt: " << output_file_name << '\n';
+    return output_file_name;
+}
+
+std::ofstream prepare_output_stream(){
+    std::string current_date_time = get_current_date_time();
+    std::string output_file_name = generate_receipt_directory(current_date_time);
+    std::ofstream output_file_stream(output_file_name);
+    output_file_stream << current_date_time << '\n';
+    return output_file_stream;
+}
+
 int main(){
     std::string zhong =     "⣿⣿⣿⣿⣿⣿⡿⠛⠋⠉⠄⠄⠄⠄⠄⠄⠄⠄⠄⠈⠉⠛⠿⣿⣿⣿⣿⣿⣿⣿\n"
                             "⣿⣿⣿⡿⠋⠁⠄⠄⢠⣴⣶⣿⣿⣶⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠈⠿⣿⣿⣿⣿\n"
@@ -199,28 +216,24 @@ int main(){
     int choice = 0;
     
     while(choice != 3){
-        std::string current_date_time = get_current_date_time();
-        std::cout << current_date_time << '\n';
-        std::cout << "How do you wish to enter the items:\n1. Manually\n2. Load from file\n3. Quit Application\n";
+        std::cout << "How do you wish to enter the items:\n1. Manually\n2. Load from file\n3. Quit Application\n4. Read Receipts";
         std::cout << "Enter your choice: ";
         std::cin >> choice;
         std::string option;
-        //output filename is receipt_dayname_monthname_day_hh_mm_ss_yyyy
-        std::vector<std::string> date_part_components = split_string(current_date_time, ' ');
-        std::vector<std::string> time_components = split_string(date_part_components[3], ':');
-        std::string output_file_name = "Receipts\\receipt_" + date_part_components[0] + '_' + date_part_components[1] + '_'+ date_part_components[2] + '_'+ time_components[0] + '_' + time_components[1] + '_' + time_components[2]  + '_' + split_string(date_part_components[4], '\n')[0] + ".txt";
-        std::cout << output_file_name <<'\n';
-        std::ofstream output_file_stream(output_file_name);
-        output_file_stream << current_date_time << '\n';
+        system("cls");
+        std::ofstream output_file_stream;//i would declare the output stream at a more sensible point(inside the cases in the swtch statement) but cpp does not like that for some reason        
         switch (choice)
         {
+        
         case 1:
+            output_file_stream = prepare_output_stream();
             manual_entry_mode(output_file_stream);
             output_file_stream.close();
             std::cout << "Are you done viewing the data [y]yes [n] no (Application will exit this view anyway no matter what you choose): ";
             std::cin >> option;
             break;
         case 2:
+            output_file_stream = prepare_output_stream();
             load_from_file(output_file_stream);
             output_file_stream.close();
             std::cout << "Are you done viewing the data [y]yes [n] no (Application will exit this view anyway no matter what you choose): ";
@@ -233,9 +246,8 @@ int main(){
             std::cout << "Invalid option Entered";
             break;
         }
-    
     output_file_stream.close();
-    system("cls");    
+   system("cls");    
    // std::cout << zhong << '\n';
     
     }
