@@ -74,7 +74,7 @@ std::vector<std::string> split_string(std::string str, char delimeter){
 
 void write_table_header(std::ostream& output_stream){
     output_stream << std::string(table_width, '-') << '\n';
-    output_stream << std::fixed << std::setprecision(2)<< '\n';
+    output_stream << std::fixed << std::setprecision(2);
     output_stream << std::left << std::setw(15) << "Product" << std::right << std::setw(15)
             << "Unit Price" << std::setw(14) << "Quantity" << std::setw(15) << "Gross Total" << std::setw(20)
              << "Discount Rate(%)" << std::setw(15) <<  "Discount" << std::setw(11) << "Net Total" << '\n';
