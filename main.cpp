@@ -195,24 +195,34 @@ int main(){
                             "⠄⠄⠄⠄⠄⠄⠄⠄⠄⠘⠿⣿⡿⠃⢀⡠⠄⠃⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄\n";
    // std::cout << zhong << '\n';
    //can't print out zhong because cmd doesnt support the ascii chars used. if youre on linux just uncomment the 2 print zhong lines and youre golden
-    std::cout << "How do you wish to enter the items:\n1. Manually\n2. Load from file\n3. Quit Application\n";
-    std::cout << "Enter your choice: ";
+    
     int choice = 0;
-    std::cin >> choice;
-    std::string option;
-    std::string output_file_name = "receipt" + get_current_date_time() + ".txt";
-    std::ofstream output_file_stream(output_file_name);
-    while(choice != 0){
+    
+    while(choice != 3){
+        std::string current_date_time = get_current_date_time();
+        std::cout << current_date_time << '\n';
+        std::cout << "How do you wish to enter the items:\n1. Manually\n2. Load from file\n3. Quit Application\n";
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
+        std::string option;
+        //output filename is receipt_dayname_monthname_day_hh_mm_ss_yyyy
+        std::vector<std::string> date_part_components = split_string(current_date_time, ' ');
+        std::vector<std::string> time_components = split_string(date_part_components[3], ':');
+        std::string output_file_name = "Receipts\\receipt_" + date_part_components[0] + '_' + date_part_components[1] + '_'+ date_part_components[2] + '_'+ time_components[0] + '_' + time_components[1] + '_' + time_components[2]  + '_' + split_string(date_part_components[4], '\n')[0] + ".txt";
+        std::cout << output_file_name <<'\n';
+        std::ofstream output_file_stream(output_file_name);
+        output_file_stream << current_date_time << '\n';
         switch (choice)
         {
         case 1:
             manual_entry_mode(output_file_stream);
+            output_file_stream.close();
             std::cout << "Are you done viewing the data [y]yes [n] no (Application will exit this view anyway no matter what you choose): ";
             std::cin >> option;
             break;
         case 2:
             load_from_file(output_file_stream);
-
+            output_file_stream.close();
             std::cout << "Are you done viewing the data [y]yes [n] no (Application will exit this view anyway no matter what you choose): ";
             std::cin >> option;
             break;
@@ -224,13 +234,9 @@ int main(){
             break;
         }
     
-    
     output_file_stream.close();
     system("cls");    
    // std::cout << zhong << '\n';
-    std::cout << "How do you wish to enter the items:\n1. Manually\n2. Load from file\n3. Quit Application\n";
-    std::cout << "Enter your choice: ";
-    std::cin >> choice;
     
     }
    
