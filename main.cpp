@@ -3,7 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <bits/stdc++.h>
-//simple version, might overdo later
+
 class Item{
 private:
     std::string product_name;
@@ -68,14 +68,14 @@ void write_table_header(){
     std::cout << std::fixed << std::setprecision(2)<< '\n';
     std::cout << std::left << std::setw(15) << "Product" << std::right << std::setw(15)
             << "Unit Price" << std::setw(14) << "Quantity" << std::setw(15) << "Gross Total" << std::setw(20)
-             << "Discount Rate" << std::setw(15) <<  "Discount" << std::setw(11) << "Net Total" << '\n';
+             << "Discount Rate(%)" << std::setw(15) <<  "Discount" << std::setw(11) << "Net Total" << '\n';
     std::cout << std::string(105, '-') << '\n';
 }
 void write_item_to_table(Item item){
     std::cout << std::left << std::setw(15) << item.getProductName() << std::right << std::setw(15)
-            << item.getUnitPrice() << std::setw(14) << item.getQuantity() << std::setw(15) << item.getGrossPrice() << std::setw(11)
-             << item.getDiscountRate() << std::setw(15) <<item.getDiscount() 
-            << std::setw(15) << item.getNetPrice() << '\n';
+            << item.getUnitPrice() << std::setw(14) << item.getQuantity() << std::setw(15) << item.getGrossPrice() << std::setw(19)
+             << (item.getDiscountRate() * 100) << std::setw(16) <<item.getDiscount() 
+            << std::setw(10) << item.getNetPrice() << '\n';
 }
 
 void manual_entry_mode(){
@@ -101,8 +101,9 @@ void manual_entry_mode(){
          "Enter custom discount rate [y/n]: ";
         std::cin >>choice;
         if(choice == 'Y' || choice == 'y'){
-            std::cout << "Enter the desired discount rate (between 0-1): ";
+            std::cout << "Enter the desired discount rate (between 0-100%): ";
             std::cin >> discount_rate;
+            discount_rate = discount_rate/100;
             Item item(product_name, unit_price, quantity, discount_rate);
             items.push_back(item);
         }
